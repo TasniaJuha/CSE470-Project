@@ -851,31 +851,31 @@ def Approved_appointments():
 #admin
 @app.route('/Contacts/delete/<int:serialno>', methods=('GET', 'POST'))
 def deleteu(serialno):
-    post_to_delete= Contacts.query.get_or_404(serialno)
+    post_to_delete = Contacts.query.get_or_404(serialno)
     try:
         db.session.delete(post_to_delete)
         db.session.commit()
-        pendings1 = Contacts.query.order_by(Contacts.name)
         flash("USER HAS BEEN REMOVED")
-        return render_template('userl.html', pendings1=pendings1)
+        return redirect(url_for('userl'))
     except:
-        flash("try again")
-        pendings1 = Contacts.query.order_by(Contacts.name)
-        return render_template('userl.html', pendings1=pendings1)
+        flash("Try again")
+        return redirect(url_for('userl'))
+
+
+
 
 @app.route('/Profcontacts/deleteP/<int:serial>', methods=('GET', 'POST'))
-def deleteP(serial): #delete prof for admin
-    post_to_delete= Profcontacts.query.get_or_404(serial)
+def deleteP(serial):
+    post_to_delete = Profcontacts.query.get_or_404(serial)
     try:
         db.session.delete(post_to_delete)
         db.session.commit()
-        pendings2 = Profcontacts.query.order_by(Profcontacts.name)
-        flash("USER HAS BEEN REMOVED")
-        return render_template('userpl.html', pendings2=pendings2)
+        remaining_professors = Profcontacts.query.order_by(Profcontacts.name).all()
+        flash("PROFESSOR HAS BEEN REMOVED")
+        return render_template('userpl.html', user_list=remaining_professors)
     except:
-        pendings2 = Profcontacts.query.order_by(Contacts.name)
-        flash("USER HAS BEEN REMOVED")
-        return render_template('userpl.html', pendings2=pendings2)
+        flash("Try again")
+        return redirect(url_for('userpl'))
 @app.route('/userl', methods=['GET'])
 def userl():
     user_list = Contacts.query.all()
